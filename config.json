@@ -1,0 +1,13 @@
+{
+    "hyperparameters": {
+        "n_estimators": [3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35, 37, 39, 41],
+        "criterion": ["gini"],
+        "max_depth": [null],
+        "max_features": ["sqrt"],
+        "bootstrap": [true],
+        "random_state": [42],
+        "cv": 5,
+        "scoring": "accuracy",
+        "n_jobs": -1
+    }
+}
