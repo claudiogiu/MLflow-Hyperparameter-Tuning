@@ -134,20 +134,11 @@ def tune_model(X, y, tracking_uri):
 if __name__ == "__main__":
     tracking_uri = "http://localhost:5000"
 
-    try:
-        project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-        X_path = os.path.join(project_root, "data", "processed", "X_train.xlsx")
-        y_path = os.path.join(project_root, "data", "processed", "y_train.xlsx")
+    project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    X_path = os.path.join(project_root, "data", "processed", "X_train.xlsx")
+    y_path = os.path.join(project_root, "data", "processed", "y_train.xlsx")
 
-        if not os.path.exists(X_path) or not os.path.exists(y_path):
-            raise FileNotFoundError(f"Errore: I file {X_path} o {y_path} non esistono. Controlla il percorso!")
+    X = pd.read_excel(X_path)
+    y = pd.read_excel(y_path).values.ravel()
 
-        X = pd.read_excel(X_path)
-        y = pd.read_excel(y_path).values.ravel()
-
-        tune_model(X, y, tracking_uri)
-
-    except FileNotFoundError as e:
-        print(e)
-    except Exception as e:
-        print(f"Si è verificato un errore: {e}")
+    tune_model(X, y, tracking_uri)
