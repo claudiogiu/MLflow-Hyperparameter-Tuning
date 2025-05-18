@@ -2,10 +2,11 @@
 
 ## Introduction  
 
-This repository is designed for hyperparameter tuning via MLflow. The optimization process is performed via GridSearchCV, ensuring the selection of the best-performing model. MLflow Tracking systematically logs parameters, metrics, and artifacts, enabling detailed monitoring of experiments. The top-performing model is then registered and versioned in MLflow Model Registry, laying the groundwork for a deployment strategy. The model is trained on a dataset sourced from the research conducted by KOKLU M., TASPINAR Y.S. (2021) in their paper *Determining the Extinguishing Status of Fuel Flames With Sound Wave by Machine Learning Methods* (IEEE Access, Vol. 9, DOI: [10.1109/ACCESS.2021.3088612](https://doi.org/10.1109/ACCESS.2021.3088612)).  
+This repository is designed for hyperparameter tuning via MLflow. The model is trained on a dataset sourced from the research conducted by KOKLU M., TASPINAR Y.S. (2021) in their paper *Determining the Extinguishing Status of Fuel Flames With Sound Wave by Machine Learning Methods* (IEEE Access, Vol. 9, DOI: [10.1109/ACCESS.2021.3088612](https://doi.org/10.1109/ACCESS.2021.3088612)).  
 
 The dataset used for training is publicly available at [this link](https://www.muratkoklu.com/datasets/).  
 
+MLflow Tracking systematically logs parameters, metrics, and artifacts, enabling detailed monitoring of experiments. The top-performing model is then registered and versioned in MLflow Model Registry.
 
 ## Getting Started 
 
@@ -51,7 +52,7 @@ To set up the repository properly, follow these steps:
      - `preprocess.py`: Stores the trained One-Hot Encoder model in `models/` for reuse in inference.  
      - `tune_model.py`: Performs hyperparameter tuning using GridSearchCV, using configuration settings from `config.json` and logging experiment details via **MLflow Tracking**.  
      - `train_model.py`: Trains the best-selected model, registers it in the **MLflow Model Registry** and stores it in `models/`.  
-     - `evaluate_model.py`: Logs the performance metrics of the `"champion"` model.  
+     - `evaluate_model.py`: Logs the performance metrics of the `@champion` model.  
 
 
 ## License  
