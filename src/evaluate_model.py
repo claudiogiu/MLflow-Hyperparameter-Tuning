@@ -17,7 +17,7 @@ def log_model_metrics(model_name: str, accuracy: float, precision: float, sensit
     client = mlflow.MlflowClient()
 
 
-    versions = client.get_latest_versions(model_name, stages=["Production"])
+    versions = client.get_latest_versions(model_name)
     if not versions:
         raise ValueError(f"No registered model found with name: {model_name}")
 
@@ -67,6 +67,7 @@ def test_model(X_test: pd.DataFrame, y_test: pd.DataFrame):
 
 if __name__ == "__main__":
     tracking_uri = "http://localhost:5000"
+    
     X_test = load_data("X_test.xlsx", "processed")
     y_test = load_data("y_test.xlsx", "processed")
 

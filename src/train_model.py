@@ -1,6 +1,6 @@
 import os
 import pickle
-import pandas as pd
+from load_data import load_data
 import mlflow
 import mlflow.sklearn
 from tune_model import configure_mlflow
@@ -31,7 +31,7 @@ def retrain_model(model, X, y):
     return model
 
 
-def register_model(model, tracking_uri, X, stage):
+def register_model(model, tracking_uri, X, alias):
     """Register the retrained model in the MLflow Model Registry."""
     mlflow.set_tracking_uri(tracking_uri)
 
@@ -44,11 +44,9 @@ def register_model(model, tracking_uri, X, stage):
     versions = [v.version for v in client.get_latest_versions("Champion_Model")]
     latest_version = max(versions) if versions else 1
     
-    client.transition_model_version_stage(name="Champion_Model", version=latest_version, stage=stage)
-    client.set_registered_model_tag(name="Champion_Model", key="stage", value="Production")
-    client.set_model_version_tag(name="Champion_Model", version=latest_version, key="stage", value=stage)
+    client.set_registered_model_alias(name="Champion_Model", version=latest_version, alias=alias)
 
-    print(f"Model successfully registered in {stage}.")
+    print(f"Model successfully registered with alias '{alias}'.")
 
 
 def save_model(model):
@@ -67,11 +65,10 @@ if __name__ == "__main__":
     tracking_uri = "http://localhost:5000"
     experiment_name = "Hyperparameter_Tuning"
 
-    project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-    X = pd.read_excel(os.path.join(project_root, "data", "processed", "X_train.xlsx"))
-    y = pd.read_excel(os.path.join(project_root, "data", "processed", "y_train.xlsx")).values.ravel()
+    X = load_data("X_train.xlsx", "processed")
+    y = load_data("y_train.xlsx", "processed").values.ravel()
 
     best_model = load_best_model(experiment_name, tracking_uri)
     retrained_model = retrain_model(best_model, X, y)
-    register_model(retrained_model, tracking_uri, X, "Production")
+    register_model(retrained_model, tracking_uri, X, alias="champion")
     save_model(retrained_model)

@@ -3,7 +3,7 @@ import json
 import yaml
 import mlflow
 import mlflow.sklearn
-import pandas as pd
+from load_data import load_data
 import warnings
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import GridSearchCV
@@ -40,10 +40,10 @@ def load_config():
     except json.JSONDecodeError as e:
         raise ValueError(f"Error in decoding JSON: {e}")
 
-    if "hyperparameters" not in config_data:
-        raise KeyError("Error: The key 'hyperparameters' is not present in the configuration file.")
+    if "model_hyperparameters" not in config_data or "gridsearch_config" not in config_data:
+        raise KeyError("Error: Required keys ('model_hyperparameters', 'gridsearch_config') are missing.")
 
-    return config_data["hyperparameters"]
+    return config_data["model_hyperparameters"], config_data["gridsearch_config"]
 
 
 def configure_mlflow(tracking_uri, experiment_name):
@@ -84,7 +84,7 @@ def tune_model(X, y, tracking_uri):
     """Performs hyperparameter tuning and logs each experiment in MLflow, identifying the best model."""
     configure_mlflow(tracking_uri, "Hyperparameter_Tuning")
 
-    params = load_config()
+    params, gridsearch_params = load_config()
     conda_env = load_conda_env()
 
     param_grid = {
@@ -99,12 +99,10 @@ def tune_model(X, y, tracking_uri):
 
     grid_search = GridSearchCV(
         rf, 
-        param_grid, 
-        cv=params["cv"], 
-        scoring=params["scoring"], 
-        n_jobs=params["n_jobs"], 
-        return_train_score=True
-    )
+        param_grid=param_grid,  
+        **gridsearch_params  
+    ) 
+    
     grid_search.fit(X, y)
 
     # Logging of the experiments
@@ -134,11 +132,7 @@ def tune_model(X, y, tracking_uri):
 if __name__ == "__main__":
     tracking_uri = "http://localhost:5000"
 
-    project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-    X_path = os.path.join(project_root, "data", "processed", "X_train.xlsx")
-    y_path = os.path.join(project_root, "data", "processed", "y_train.xlsx")
-
-    X = pd.read_excel(X_path)
-    y = pd.read_excel(y_path).values.ravel()
+    X = load_data("X_train.xlsx", "processed")
+    y = load_data("y_train.xlsx", "processed").values.ravel()
 
     tune_model(X, y, tracking_uri)
