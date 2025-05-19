@@ -50,7 +50,7 @@ To set up the repository properly, follow these steps:
    - This command sequentially runs the following modules:
      - `load_data.py`: Ingests the data.
      - `preprocess.py`: Stores the trained One-Hot Encoder model in `models/` for reuse in inference.  
-     - `tune_model.py`: Performs hyperparameter tuning using GridSearchCV, using configuration settings from `config.json` and logging experiment details via **MLflow Tracking**.  
+     - `tune_model.py`: Performs hyperparameter tuning via GridSearchCV, using configuration settings from `config.json` and logging experiment details via **MLflow Tracking**.  
      - `train_model.py`: Trains the best-selected model, registers it in the **MLflow Model Registry** and stores it in `models/`.  
      - `evaluate_model.py`: Logs the performance metrics of the `@champion` model.  
 
