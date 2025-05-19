@@ -4,6 +4,9 @@ from load_data import load_data
 import mlflow
 import mlflow.sklearn
 from tune_model import configure_mlflow
+import warnings
+
+warnings.filterwarnings("ignore")
 
 def load_best_model(experiment_name, tracking_uri):
     """Finds the best model from the specified MLflow experiment."""
